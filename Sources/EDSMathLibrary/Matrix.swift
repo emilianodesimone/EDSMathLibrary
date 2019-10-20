@@ -10,7 +10,7 @@ import Foundation
 
 public typealias Vector = [CompNumb]
 
-public protocol MatrixType: CustomStringConvertible, Equatable {
+public protocol MatrixType: CustomStringConvertible, Equatable, Sequence {
     var rows: Int {get}
     var columns: Int {get}
     var grid: [CompNumb] {get}
@@ -64,13 +64,20 @@ extension MatrixType {
     }
 }
 
+extension MatrixType {
+
+    public func makeIterator() -> IndexingIterator<[CompNumb]> {
+        return grid.makeIterator()
+    }
+}
+
 public extension MatrixType {
     
     var entriesMaxNumberOfCharacters: Int  {
         return grid.map {
             $0.description
             }.reduce(0) { (tempMax, nextString) -> Int in
-                return max(tempMax, nextString.count)
+                return Swift.max(tempMax, nextString.count)
             } + 2
     }
     
@@ -182,8 +189,8 @@ public struct Matrix: MatrixType {
     public init(rows: Int, columns: Int, values: [CompNumb]) {
         self.rows = rows
         self.columns = columns
-        let limit = min(rows*columns, values.count)
-        let zeroFillArray = Array(repeating: 0.0 + 0.i, count: max(rows*columns - values.count,0))
+        let limit = Swift.min(rows*columns, values.count)
+        let zeroFillArray = Array(repeating: 0.0 + 0.i, count: Swift.max(rows*columns - values.count,0))
         self.grid = Array(values.prefix(limit)) + zeroFillArray
     }
     
@@ -248,8 +255,8 @@ public struct SquareMatrix: MatrixType {
     
     public init(rows: Int, values: [CompNumb]) {
         self.rows = rows
-        let limit = min(rows*rows, values.count)
-        let zeroFillArray = Array(repeating: 0.0 + 0.i, count: max(rows*rows - values.count,0))
+        let limit = Swift.min(rows*rows, values.count)
+        let zeroFillArray = Array(repeating: 0.0 + 0.i, count: Swift.max(rows*rows - values.count,0))
         self.grid = Array(values.prefix(limit)) + zeroFillArray
     }
     

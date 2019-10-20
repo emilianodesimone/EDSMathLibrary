@@ -101,22 +101,3 @@ extension Float: Field {
         return -self
     }
 }
-
-
-//public func /(lhs: Double, rhs: CompNumb) -> CompNumb {
-//    return lhs * rhs.inverse()
-//}
-//
-//public func /(lhs: Int, rhs: CompNumb) -> CompNumb {
-//    return lhs * rhs.inverse()
-//}
-//
-//
-//
-//public func /(lhs: CompNumb, rhs: Double) -> CompNumb {
-//    return lhs * (1/rhs)
-//}
-//
-//public func /(lhs: CompNumb, rhs: Int) -> CompNumb {
-//    return lhs * (1/rhs)
-//}
