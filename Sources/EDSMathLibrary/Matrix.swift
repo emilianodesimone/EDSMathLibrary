@@ -199,13 +199,6 @@ public struct Matrix: MatrixType {
         self.columns = columns
         grid = Array(repeating: 0.0, count: rows * columns)
     }
-    
-    fileprivate func asSquareMatrix() -> SquareMatrix? {
-        guard self.rows == self.columns, self.grid.count == rows*rows else { return nil }
-        return SquareMatrix(rows: self.rows, values: self.grid)
-    }
-    
-    
 }
 
 extension Matrix {
@@ -215,17 +208,22 @@ extension Matrix {
         return squareMatrix.isInvertible()
     }
     
-    public func isUnitary() -> Bool {
+    func isUnitary() -> Bool {
         guard let squareMatrix = self.asSquareMatrix() else { return false }
         
         return squareMatrix.isUnitary()
     }
     
     
-    public func determinant() -> CompNumb? {
+    func determinant() -> CompNumb? {
         guard let squareMatrix = self.asSquareMatrix() else { return nil }
         
         return squareMatrix.determinant()
+    }
+    
+    func asSquareMatrix() -> SquareMatrix? {
+        guard rows == columns, grid.count == rows*rows else { return nil }
+        return SquareMatrix(rows: self.rows, values: self.grid)
     }
     
     static public func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
