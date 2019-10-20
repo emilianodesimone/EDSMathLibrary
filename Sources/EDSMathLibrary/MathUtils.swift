@@ -33,7 +33,7 @@ public func e<T: AssociativeAlgebra>(_ x: T, order: Int = 15) -> T {
     
 }
 
-public protocol Ring {
+public protocol Ring: Equatable {
     static func +(lhs: Self, rhs: Self) -> Self
     static func *(lhs: Self, rhs: Self) -> Self
 }
@@ -99,5 +99,31 @@ extension Float: Field {
     
     public func addInverse() -> Float {
         return -self
+    }
+}
+
+infix operator ** : MultiplicationPrecedence
+
+
+func **<T>(lhs: [T], rhs: [T]) -> T? where T: Field {
+    guard lhs.count == rhs.count && lhs.count > 0 else { return nil }
+    let vectorOfProducts = (1..<lhs.count).map{lhs[$0]*rhs[$0]}
+    return vectorOfProducts.reduce(lhs[0]*rhs[0]) {$0 + $1}
+}
+
+extension Array {
+    func norm() -> Double {
+        return sqrt(self.map {
+            switch $0 {
+            case let someInt as Int:
+                return Double(someInt)
+            case let someDouble as Double:
+                return someDouble
+            case let someFloat as Float:
+                return Double(someFloat)
+            default:
+                return 0.0
+            }
+            }.reduce(0.0) {$0 + $1*$1})
     }
 }

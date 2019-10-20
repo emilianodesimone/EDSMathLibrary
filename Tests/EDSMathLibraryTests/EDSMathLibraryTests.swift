@@ -14,17 +14,17 @@ final class EDSMathLibraryTests: XCTestCase {
     }
     
     func testMatrix() {
-        let matrix = Matrix(rows: 3, values: [2,0,0,0,2,0,0,0,2])
+        let matrix = ComplexMatrix(rows: 3, values: [2,0,0,0,2,0,0,0,2])
         XCTAssertNotNil(matrix.asSquareMatrix())
         if let squareMatrix = matrix.asSquareMatrix() {
             XCTAssertEqual(squareMatrix.determinant(), 8)
             XCTAssertTrue(squareMatrix.isInvertible())
             XCTAssertFalse(squareMatrix.isIdentity())
         }
-        let identityMatrix = SquareMatrix(rows: 3, values: [1,0,0,0,1,0,0,0,1])
+        let identityMatrix = ComplexSquareMatrix(rows: 3, values: [1,0,0,0,1,0,0,0,1])
         XCTAssertEqual(identityMatrix.determinant(), 1)
         XCTAssertTrue(identityMatrix.isIdentity())
-        let nonSquareMatrix = Matrix(rows: 3, values: [2,1,0,1,4,4])
+        let nonSquareMatrix = ComplexMatrix(rows: 3, values: [2,1,0,1,4,4])
         XCTAssertNil(nonSquareMatrix.asSquareMatrix())
         XCTAssertNil(nonSquareMatrix.determinant())
         
