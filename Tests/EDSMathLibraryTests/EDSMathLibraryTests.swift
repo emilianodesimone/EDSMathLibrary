@@ -28,6 +28,8 @@ final class EDSMathLibraryTests: XCTestCase {
         XCTAssertNil(nonSquareMatrix.asSquareMatrix())
         XCTAssertNil(nonSquareMatrix.determinant())
         
+        XCTAssertEqual(exp(identityMatrix, 3), identityMatrix)
+        XCTAssertEqual(exp(matrix.asSquareMatrix()!, 3), ComplexSquareMatrix(rows: 3, values: [8,0,0,0,8,0,0,0,8]))
     }
 
     static var allTests = [

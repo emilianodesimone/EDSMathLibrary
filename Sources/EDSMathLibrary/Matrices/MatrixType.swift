@@ -2,15 +2,12 @@ import Foundation
 
 public protocol MatrixType: CustomStringConvertible, Equatable, Sequence {
     associatedtype T: Field, CustomStringConvertible
+    typealias Vector = [T]
     var rows: Int {get}
     var columns: Int {get}
-    var grid: [T] {get}
+    var grid: Vector {get}
     
-    typealias Vector = [T]
-    
-    //static func randomMatrix(rows: Int, columns: Int, maxReal: Double, maxIm: Double) -> Self
-    
-    init(rows: Int, values: [T])
+    init(rows: Int, values: Vector)
     
 }
 
@@ -51,7 +48,7 @@ extension MatrixType {
 
 extension MatrixType {
 
-    public func makeIterator() -> IndexingIterator<[T]> {
+    public func makeIterator() -> IndexingIterator<Vector> {
         return grid.makeIterator()
     }
 }
@@ -116,7 +113,7 @@ public extension MatrixType {
         
         let newRows: Int = toEntry.row - fromEntry.row + 1
         
-        var newValues: [T] = []
+        var newValues: Vector = []
         for j in fromEntry.row...toEntry.row {
             for i in fromEntry.column...toEntry.column {
                 newValues.append(self[j,i])
@@ -129,6 +126,4 @@ public extension MatrixType {
     func isSymmetric() -> Bool {
         return self == self.transposed()
     }
-    
-    
 }

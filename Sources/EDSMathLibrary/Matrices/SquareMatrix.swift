@@ -12,8 +12,7 @@ public struct SquareMatrix<S>: MatrixType where S: Field & CustomStringConvertib
         precondition(values.count == rows*rows)
         self.rows = rows
         let limit = rows*rows
-        //let zeroFillArray = Array(repeating: 0.0 + 0.i, count: Swift.max(rows*rows - values.count,0))
-        self.grid = Array(values.prefix(limit))// + zeroFillArray
+        self.grid = Array(values.prefix(limit))
     }
     
     func asMatrix() -> Matrix<S> {
@@ -30,7 +29,6 @@ extension ComplexSquareMatrix: ComplexMatrixType {
     }
     
     public func isIdentity() -> Bool {
-        
         for (index, value) in grid.enumerated() {
             if rowIndexForGridIndex(index) == columnIndexForGridIndex(index)  {
                 if value != 1 { return false }
@@ -54,7 +52,6 @@ extension ComplexSquareMatrix: ComplexMatrixType {
     public func determinant() -> CompNumb {
         if self.rows == 1 {
             return self[0,0]
-            
         } else {
             var determinant: CompNumb = 0
             for k in 0...columns-1 {
@@ -63,10 +60,8 @@ extension ComplexSquareMatrix: ComplexMatrixType {
             }
             return determinant
         }
-        
     }
 }
-
 
 extension SquareMatrix: Ring where S == CompNumb {
     

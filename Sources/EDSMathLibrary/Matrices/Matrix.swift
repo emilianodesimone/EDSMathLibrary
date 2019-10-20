@@ -18,8 +18,7 @@ public struct Matrix<S>: MatrixType where S: Field & CustomStringConvertible {
         self.rows = rows
         self.columns = columns
         let limit = Swift.min(rows*columns, values.count)
-        //let zeroFillArray = Array(repeating: 0.0 + 0.i, count: Swift.max(rows*columns - values.count,0))
-        self.grid = Array(values.prefix(limit))// + zeroFillArray
+        self.grid = Array(values.prefix(limit))
     }
 }
 
@@ -64,6 +63,12 @@ extension Matrix {
 typealias ComplexMatrix = Matrix<CompNumb>
 
 extension ComplexMatrix: ComplexMatrixType {
+    
+    func asSquareMatrix() -> ComplexSquareMatrix? {
+        guard rows == columns, grid.count == rows*rows else { return nil }
+        return ComplexSquareMatrix(rows: self.rows, values: self.grid)
+    }
+    
     public func isInvertible() -> Bool {
         guard let squareMatrix = self.asSquareMatrix() else { return false }
         
@@ -72,14 +77,11 @@ extension ComplexMatrix: ComplexMatrixType {
     
     func isUnitary() -> Bool {
         guard let squareMatrix = self.asSquareMatrix() else { return false }
-        
         return squareMatrix.isUnitary()
     }
     
-    
     func determinant() -> CompNumb? {
         guard let squareMatrix = self.asSquareMatrix() else { return nil }
-        
         return squareMatrix.determinant()
     }
 }
