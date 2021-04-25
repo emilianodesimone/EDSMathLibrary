@@ -76,7 +76,6 @@ extension SquareMatrix: Ring where S == CompNumb {
         }
         return SquareMatrix(grid: newGrid)
     }
-    
     static public func +(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
         assert(lhs.rows == rhs.columns, "You can only sum matrices of the same size")
         let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
@@ -85,6 +84,17 @@ extension SquareMatrix: Ring where S == CompNumb {
             }
         }
         return SquareMatrix(grid: newGrid)
+    }
+}
+
+extension SquareMatrix where S == Double {
+    
+    public static func *(lhs:Double, rhs: SquareMatrix) -> Self {
+        let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
+        return SquareMatrix(grid: newGrid)
+    }
+    public static func *(lhs:SquareMatrix, rhs: Double) -> Self {
+        return rhs*lhs
     }
 }
 

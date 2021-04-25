@@ -67,29 +67,25 @@ extension Matrix {
     }
 }
 
-typealias ComplexMatrix = Matrix<CompNumb>
+extension Matrix where S == CompNumb {
+    
+    public static func *(lhs:CompNumb, rhs: Matrix) -> Self {
+        let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
+        return Matrix(grid: newGrid)
+    }
+    public static func *(lhs:Matrix, rhs: CompNumb) -> Self {
+        return rhs*lhs
+    }
+}
 
-extension ComplexMatrix: ComplexMatrixType {
+extension Matrix where S == Double {
     
-    func asSquareMatrix() -> ComplexSquareMatrix? {
-        guard rows == columns else { return nil }
-        return ComplexSquareMatrix(grid: self.grid)
+    public static func *(lhs:Double, rhs: Matrix) -> Self {
+        let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
+        return Matrix(grid: newGrid)
     }
-    
-    public func isInvertible() -> Bool {
-        guard let squareMatrix = self.asSquareMatrix() else { return false }
-        
-        return squareMatrix.isInvertible()
-    }
-    
-    func isUnitary() -> Bool {
-        guard let squareMatrix = self.asSquareMatrix() else { return false }
-        return squareMatrix.isUnitary()
-    }
-    
-    func determinant() -> CompNumb? {
-        guard let squareMatrix = self.asSquareMatrix() else { return nil }
-        return squareMatrix.determinant()
+    public static func *(lhs:Matrix, rhs: Double) -> Self {
+        return rhs*lhs
     }
 }
 
