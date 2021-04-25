@@ -33,7 +33,8 @@ public struct CompNumb: Hashable, ExpressibleByIntegerLiteral, ExpressibleByFloa
     }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(0)
+        hasher.combine(real)
+        hasher.combine(im)
     }
 
 
