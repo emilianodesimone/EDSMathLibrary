@@ -1,7 +1,1 @@
-import XCTest
-
-import EDSMathLibraryTests
-
-var tests = [XCTestCaseEntry]()
-tests += EDSMathLibraryTests.allTests()
-XCTMain(tests)
+fatalError("Run the tests with `swift test --enable-test-discovery`.")

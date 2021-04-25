@@ -3,36 +3,74 @@ import XCTest
 
 final class EDSMathLibraryTests: XCTestCase {
     
-    func testComplexNumbers() {
-        let a = CompNumb(real: 2.0, imaginary: 3.0)
-        let b = 3.i + 4
+    var testRealMatrix: Matrix<CompNumb>!
+    var testRealMatrixTransposed: Matrix<CompNumb>!
+    var testComplexSquareMatrix: SquareMatrix<CompNumb>!
+    var squareMatrixInDisguise: Matrix<CompNumb>!
+    var idMatrix: SquareMatrix<CompNumb>!
+    var squareMatrix: SquareMatrix<CompNumb>!
+    var hermitianMatrix: SquareMatrix<CompNumb>!
+    
+    override func setUp() {
+        super.setUp()
+        testRealMatrix = Matrix(rows: 3, values: [0,1,2,1,3,5])
+        testRealMatrixTransposed = Matrix(rows: 3, values: [0,2,3,1,1,5])
+        testComplexSquareMatrix = SquareMatrix(rows: 2, values: [2 - 8.i, 3.i, 1, 0 - 4.i])
+        squareMatrixInDisguise = Matrix(rows: 3, values: [0,1,2,1,3,5, 4, 2, 3])
+        idMatrix = SquareMatrix(rows: 3, values: [1,0,0,0,1,0,0,0,1])
+        squareMatrix = SquareMatrix(rows: 2, values: [2,3,1,4])
+        hermitianMatrix = SquareMatrix(rows: 3, values: [1, 1 + 2.i, 2 + 3.i, 1 - 2.i, 3, 4 - 2.i, 2 - 3.i, 4 + 2.i, 3])
+    }
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+        testRealMatrix = nil
+        testRealMatrixTransposed = nil
+        testComplexSquareMatrix = nil
+        idMatrix = nil
+        squareMatrix = nil
+        squareMatrixInDisguise = nil
+        hermitianMatrix = nil
+    }
+    
+    
+    func testDeterminant() {
         
-        XCTAssertEqual(a + b, 6 + 6.i)
-        XCTAssertEqual(a * b, -1 + 18.i)
-        XCTAssertEqual((a + b).norm(), sqrt(72))
+        XCTAssertNil(testRealMatrix.determinant(), "The determinant of a non-square matrix has to be nil")
+        XCTAssertNotNil(squareMatrixInDisguise, "A matrix of class 'Matrix', if it's square, has to have a determinant")
+        XCTAssertEqual(idMatrix.determinant(), 1, "The determinant of the Identity has to be equal to 1")
+        XCTAssertEqual(squareMatrix.determinant(), 5, "The determinant of this test SquareMatrix has to be equal to 5")
+        XCTAssertEqual(testComplexSquareMatrix.determinant(), -32 - 11.i , "The determinant of this test SquareMatrix has to be equal to \(-32 - 11.i) and not \(testComplexSquareMatrix.determinant())")
         
     }
     
-    func testMatrix() {
-        let matrix = ComplexMatrix(rows: 3, values: [2,0,0,0,2,0,0,0,2])
-        XCTAssertNotNil(matrix.asSquareMatrix())
-        if let squareMatrix = matrix.asSquareMatrix() {
-            XCTAssertEqual(squareMatrix.determinant(), 8)
-            XCTAssertTrue(squareMatrix.isInvertible())
-            XCTAssertFalse(squareMatrix.isIdentity())
-        }
-        let identityMatrix = ComplexSquareMatrix(rows: 3, values: [1,0,0,0,1,0,0,0,1])
-        XCTAssertEqual(identityMatrix.determinant(), 1)
-        XCTAssertTrue(identityMatrix.isIdentity())
-        let nonSquareMatrix = ComplexMatrix(rows: 3, values: [2,1,0,1,4,4])
-        XCTAssertNil(nonSquareMatrix.asSquareMatrix())
-        XCTAssertNil(nonSquareMatrix.determinant())
-        
-        XCTAssertEqual(exp(identityMatrix, 3), identityMatrix)
-        XCTAssertEqual(exp(matrix.asSquareMatrix()!, 3), ComplexSquareMatrix(rows: 3, values: [8,0,0,0,8,0,0,0,8]))
+    func testHermitian() {
+        XCTAssertTrue(hermitianMatrix.isHermitian(), "An hermitian matrix has to be recognised as such.")
+        XCTAssertTrue(idMatrix.isHermitian(), "The identity matrix is hermitian.")
     }
-
-    static var allTests = [
-        ("testExample", testMatrix),
-    ]
+    
+    func testIdentity() {
+        XCTAssertTrue(idMatrix.isIdentity(), "The identity matrix has to be recognised as such.")
+        XCTAssertFalse(squareMatrix.isIdentity(), "A matrix different from the Identity matrix cannot be recognised as such.")
+    }
+    
+    func testTransposition() {
+        XCTAssertEqual(testRealMatrix.transposed(), testRealMatrixTransposed, "The matrix returned by the transpose() function called by the first matrix should be equal to the second matrix.")
+    }
+    
+    func testSizes() {
+        
+        XCTAssertEqual(testRealMatrix.matrixByRemoveRow(0).rows, testRealMatrix.rows - 1, "When removing a row, the resulting Matrix has to be a number of rows equal to the original minus one.")
+        XCTAssertEqual(testRealMatrix.matrixByRemoveColumn(1).columns, testRealMatrix.columns - 1, "When removing a column, the resulting Matrix has to be a number of columns equal to the original minus one.")
+        XCTAssertNotNil(squareMatrix.minor(0, column: 0).determinant(), "A minor of a square matrix has to have a determinant as well")
+        
+    }
+    
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measure {
+            
+        }
+    }
 }

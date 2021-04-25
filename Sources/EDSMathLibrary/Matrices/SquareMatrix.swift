@@ -43,7 +43,7 @@ extension ComplexSquareMatrix: ComplexMatrixType {
         return ((self * self.transposed()).isIdentity())
     }
     
-    private func minor(_ row: Int, column: Int) -> SquareMatrix {
+    func minor(_ row: Int, column: Int) -> SquareMatrix {
         let squareMatrix = asMatrix().matrixByRemoveColumn(column).matrixByRemoveRow(row).asSquareMatrix()
         precondition(squareMatrix != nil)
         return squareMatrix!
