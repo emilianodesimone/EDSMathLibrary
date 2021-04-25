@@ -7,9 +7,9 @@ protocol ComplexMatrixType: MatrixType where T == CompNumb {
 
 extension ComplexMatrixType {
     func conjugated() -> Self {
-        let newGrid = self.grid.map{$0.conjugated()}
+        let newGrid = self.grid.map{ $0.map{ $0.conjugated() } }
         
-        return Self(rows: rows, values: newGrid)
+        return Self(grid: newGrid)
     }
     
     func isHermitian() -> Bool {

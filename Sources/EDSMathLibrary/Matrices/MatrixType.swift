@@ -5,40 +5,41 @@ public protocol MatrixType: CustomStringConvertible, Equatable, Sequence {
     typealias Vector = [T]
     var rows: Int {get}
     var columns: Int {get}
-    var grid: Vector {get}
+    var grid: [Vector] {get}
     
-    init(rows: Int, values: Vector)
-    
+    init(grid: [Vector])
 }
 
 extension MatrixType {
     public var description: String {
-        get {
-            var descriptionString: String = ""
-            for i in 0...self.rows-1 {
-                descriptionString = descriptionString + (i == 0 ? "\n⎛" : (i == self.rows-1 ? "⎝" : "⎢"))
-                for j in 0...self.columns-1 {
-                    descriptionString = descriptionString + justifiedEntry((i * self.columns) + j)
-                }
-                descriptionString = descriptionString + ( i == 0 ? "⎞\n" : (i == self.rows-1 ? "⎠\n" : "⎥\n"))
-            }
-            return descriptionString
-        }
+//        get {
+//            var descriptionString: String = ""
+//            for i in 0...self.rows-1 {
+//                descriptionString = descriptionString + (i == 0 ? "\n⎛" : (i == self.rows-1 ? "⎝" : "⎢"))
+//                for j in 0...self.columns-1 {
+//                    descriptionString = descriptionString + justifiedEntry((i * self.columns) + j)
+//                }
+//                descriptionString = descriptionString + ( i == 0 ? "⎞\n" : (i == self.rows-1 ? "⎠\n" : "⎥\n"))
+//            }
+//            return descriptionString
+//        }
+        
+        return ""
     }
     
-    func justifiedEntry(_ value: Int) -> String {
-        let stringToJustify = "\(grid[value])"
-        let blanksToFill = entriesMaxNumberOfCharacters - stringToJustify.count
-        var justifiedString: String = ""
-        for _ in (0..<blanksToFill/2) {
-            justifiedString.append(" ")
-        }
-        justifiedString.append(stringToJustify)
-        for _ in (0..<(blanksToFill - blanksToFill/2)) {
-            justifiedString.append(" ")
-        }
-        return justifiedString
-    }
+//    func justifiedEntry(_ value: Int) -> String {
+//        let stringToJustify = "\(grid[value])"
+//        let blanksToFill = entriesMaxNumberOfCharacters - stringToJustify.count
+//        var justifiedString: String = ""
+//        for _ in (0..<blanksToFill/2) {
+//            justifiedString.append(" ")
+//        }
+//        justifiedString.append(stringToJustify)
+//        for _ in (0..<(blanksToFill - blanksToFill/2)) {
+//            justifiedString.append(" ")
+//        }
+//        return justifiedString
+//    }
     
     public static func ==(lhs:Self, rhs: Self) -> Bool {
         
@@ -48,7 +49,7 @@ extension MatrixType {
 
 extension MatrixType {
 
-    public func makeIterator() -> IndexingIterator<Vector> {
+    public func makeIterator() -> IndexingIterator<[Vector]> {
         return grid.makeIterator()
     }
 }
@@ -56,19 +57,18 @@ extension MatrixType {
 public extension MatrixType {
     
     var entriesMaxNumberOfCharacters: Int  {
-        return grid.map {
-            $0.description
-            }.reduce(0) { (tempMax, nextString) -> Int in
+        return grid.map { $0.flatMap { $0.description } }
+            .reduce(0) { (tempMax, nextString) -> Int in
                 return Swift.max(tempMax, nextString.count)
             } + 2
     }
     
     func row(_ j:Int) -> Vector {
-        return (0...self.columns - 1).map{grid[$0 + j * self.rows]}
+        return grid[j-1]
     }
     
     func column(_ j:Int) -> Vector {
-        return (0...self.rows - 1).map{grid[j + $0 * self.columns]}
+        return (0...grid.count - 1).map{grid[$0][j-1]}
     }
     
     func columnIndexForGridIndex(_ index: Int) -> Int {
@@ -80,30 +80,30 @@ public extension MatrixType {
     }
     
     var allColumns: [Vector] {
-        return (0..<columns).map{self.column($0)}
+        return (1...columns).map{self.column($0)}
     }
     
     var allRows: [Vector] {
-        return (0..<rows).map{self.row($0)}
+        return (1...rows).map{self.row($0)}
     }
     
     func indexIsValidForRow(_ row: Int, column: Int) -> Bool {
-        return row >= 0 && row < rows && column >= 0 && column < columns
+        return row > 0 && row <= rows && column > 0 && column <= columns
     }
     
     subscript(row: Int, column: Int) -> T {
         get {
-            return grid[((row) * columns) + column]
+            grid[row-1][column-1]
         }
     }
     
     func transposed() -> Self {
         
-        let newGrid = (0..<columns).map {
+        let newGrid = (1...columns).map {
             return column($0)
-            }.flatMap { $0 }
+            }
         
-        return Self(rows: columns, values: newGrid)
+        return Self(grid: newGrid)
     }
     
     typealias MatrixEntry = (row: Int, column:Int)
@@ -111,16 +111,13 @@ public extension MatrixType {
     func submatrix(_ fromEntry: MatrixEntry, toEntry: MatrixEntry) -> Self {
         assert(self.indexIsValidForRow(fromEntry.row, column: fromEntry.column) && self.indexIsValidForRow(toEntry.row, column: toEntry.column) && fromEntry.row <= toEntry.row && fromEntry.column <= toEntry.column, "Incorrect indeces")
         
-        let newRows: Int = toEntry.row - fromEntry.row + 1
-        
-        var newValues: Vector = []
-        for j in fromEntry.row...toEntry.row {
-            for i in fromEntry.column...toEntry.column {
-                newValues.append(self[j,i])
+        let newGrid = (fromEntry.row...toEntry.row).map { j in
+            (fromEntry.column...toEntry.column).map { i in
+                return self[j,i]
             }
         }
         
-        return Self(rows: newRows, values: newValues)
+        return Self(grid: newGrid)
     }
 
     func isSymmetric() -> Bool {

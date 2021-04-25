@@ -5,58 +5,65 @@ public struct Matrix<S>: MatrixType where S: Field & CustomStringConvertible {
     public typealias T = S
     
     public let rows: Int, columns: Int
-    public let grid: [S]
+    public let grid: [[S]]
     
-    public init(rows: Int, values: [S]) {
-        var columns = (values.count - (values.count % rows)) / rows
-        if values.count % rows != 0 { columns = columns + 1 }
-        self.init(rows: rows, columns: columns, values: values)
-    }
-    
-    public init(rows: Int, columns: Int, values: [S]) {
-        precondition(values.count == rows * columns)
-        self.rows = rows
-        self.columns = columns
-        let limit = Swift.min(rows*columns, values.count)
-        self.grid = Array(values.prefix(limit))
+    public init(grid: [[S]]) {
+        precondition({
+            guard grid.count > 0 else { return (false) }
+            var precondition = true
+            grid.enumerated().forEach { offset, row in
+                if row.count != grid[0].count { precondition = false }
+            }
+            return precondition
+        }())
+        self.rows = grid.count
+        self.columns = grid[0].count
+        self.grid = grid
     }
 }
 
 extension Matrix {
     
     func asSquareMatrix() -> SquareMatrix<S>? {
-        guard rows == columns, grid.count == rows*rows else { return nil }
-        return SquareMatrix(rows: self.rows, values: self.grid)
+        guard rows == columns else { return nil }
+        return SquareMatrix(grid: self.grid)
     }
     
     func matrixByRemoveColumn(_ j: Int) -> Matrix {
-        let indecesToRemove: [Int] = (0...self.rows - 1).map{j + $0 * self.columns}
-        let newArray = grid.enumerated().compactMap { indecesToRemove.contains($0.0) ? nil : $0.1 }
-        return Matrix(rows: self.rows, values: newArray)
+        let newGrid = grid.map{ row -> [S] in
+            var newRow = row
+            newRow.remove(at: j - 1)
+            return newRow
+        }
+        return Matrix(grid: newGrid)
         
     }
     
     func matrixByRemoveRow(_ j: Int) -> Matrix {
-        let indecesToRemove: [Int] = (0...self.columns - 1).map{$0 + j * self.columns}
-        let newArray = grid.enumerated().compactMap { indecesToRemove.contains($0.0) ? nil : $0.1 }
-        return Matrix(rows: self.rows - 1, values: newArray)
+        var newGrid = grid
+        newGrid.remove(at: j - 1)
+        return Matrix(grid: newGrid)
         
     }
     
     static public func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
         guard (lhs.columns == rhs.rows && lhs.columns > 0) else { return nil }
-        let newGrid: [S] = (0..<lhs.rows*rhs.columns).map {
-            let j = $0%rhs.columns
-            let i = Int(($0 - $0%rhs.columns)/rhs.columns)
-            return (lhs.row(i) ** rhs.column(j))!
+        let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
+            return (1...rhs.columns).map { j in
+                return (lhs.row(i) ** rhs.column(j))!
+            }
         }
-        return Matrix(rows: lhs.rows, columns: rhs.columns, values: newGrid)
+        return Matrix(grid: newGrid)
     }
     
     static public func +(lhs: Matrix, rhs: Matrix) -> Matrix? {
         guard (lhs.rows == rhs.rows && lhs.columns == rhs.columns) else { return nil }
-        let newArray = (0..<lhs.rows*lhs.columns).map { lhs.grid[$0] + rhs.grid[$0] }
-        return Matrix(rows: lhs.rows, columns: lhs.columns, values: newArray)
+        let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
+            return (1...rhs.columns).map { j in
+                return (lhs[i,j] + rhs[i,j])
+            }
+        }
+        return Matrix(grid: newGrid)
     }
 }
 
@@ -65,8 +72,8 @@ typealias ComplexMatrix = Matrix<CompNumb>
 extension ComplexMatrix: ComplexMatrixType {
     
     func asSquareMatrix() -> ComplexSquareMatrix? {
-        guard rows == columns, grid.count == rows*rows else { return nil }
-        return ComplexSquareMatrix(rows: self.rows, values: self.grid)
+        guard rows == columns else { return nil }
+        return ComplexSquareMatrix(grid: self.grid)
     }
     
     public func isInvertible() -> Bool {

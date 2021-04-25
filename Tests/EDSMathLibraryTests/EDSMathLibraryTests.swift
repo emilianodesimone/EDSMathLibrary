@@ -13,13 +13,13 @@ final class EDSMathLibraryTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        testRealMatrix = Matrix(rows: 3, values: [0,1,2,1,3,5])
-        testRealMatrixTransposed = Matrix(rows: 3, values: [0,2,3,1,1,5])
-        testComplexSquareMatrix = SquareMatrix(rows: 2, values: [2 - 8.i, 3.i, 1, 0 - 4.i])
-        squareMatrixInDisguise = Matrix(rows: 3, values: [0,1,2,1,3,5, 4, 2, 3])
-        idMatrix = SquareMatrix(rows: 3, values: [1,0,0,0,1,0,0,0,1])
-        squareMatrix = SquareMatrix(rows: 2, values: [2,3,1,4])
-        hermitianMatrix = SquareMatrix(rows: 3, values: [1, 1 + 2.i, 2 + 3.i, 1 - 2.i, 3, 4 - 2.i, 2 - 3.i, 4 + 2.i, 3])
+        testRealMatrix = Matrix(grid: [[0,1],[2,1],[3,5]])
+        testRealMatrixTransposed = Matrix(grid: [[0,2,3],[1,1,5]])
+        testComplexSquareMatrix = SquareMatrix(grid: [[2 - 8.i, 3.i], [1, 0 - 4.i]])
+        squareMatrixInDisguise = Matrix(grid: [[0,1,2],[1,3,5], [4, 2, 3]])
+        idMatrix = SquareMatrix(grid: [[1,0,0],[0,1,0],[0,0,1]])
+        squareMatrix = SquareMatrix(grid: [[2,3],[1,4]])
+        hermitianMatrix = SquareMatrix(grid: [[1, 1 + 2.i, 2 + 3.i], [1 - 2.i, 3, 4 - 2.i], [2 - 3.i, 4 + 2.i, 3]])
     }
     
     override func tearDown() {
@@ -61,9 +61,9 @@ final class EDSMathLibraryTests: XCTestCase {
     
     func testSizes() {
         
-        XCTAssertEqual(testRealMatrix.matrixByRemoveRow(0).rows, testRealMatrix.rows - 1, "When removing a row, the resulting Matrix has to be a number of rows equal to the original minus one.")
-        XCTAssertEqual(testRealMatrix.matrixByRemoveColumn(1).columns, testRealMatrix.columns - 1, "When removing a column, the resulting Matrix has to be a number of columns equal to the original minus one.")
-        XCTAssertNotNil(squareMatrix.minor(0, column: 0).determinant(), "A minor of a square matrix has to have a determinant as well")
+        XCTAssertEqual(testRealMatrix.matrixByRemoveRow(1).rows, testRealMatrix.rows - 1, "When removing a row, the resulting Matrix has to be a number of rows equal to the original minus one.")
+        XCTAssertEqual(testRealMatrix.matrixByRemoveColumn(2).columns, testRealMatrix.columns - 1, "When removing a column, the resulting Matrix has to be a number of columns equal to the original minus one.")
+        XCTAssertNotNil(squareMatrix.minor(1, column: 1).determinant(), "A minor of a square matrix has to have a determinant as well")
         
     }
     

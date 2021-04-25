@@ -6,17 +6,24 @@ public struct SquareMatrix<S>: MatrixType where S: Field & CustomStringConvertib
     public var columns: Int {
         return rows
     }
-    public let grid: [S]
+    public let grid: [[S]]
     
-    public init(rows: Int, values: [S]) {
-        precondition(values.count == rows*rows)
-        self.rows = rows
-        let limit = rows*rows
-        self.grid = Array(values.prefix(limit))
+    public init(grid: [[S]]) {
+        precondition({
+            let firstRow = grid[0]
+            var precondition = true
+            guard grid.count > 0, grid.count == firstRow.count else { return false }
+            grid.enumerated().forEach { offset, row in
+                if row.count != firstRow.count  { precondition = false }
+            }
+            return precondition
+        }())
+        self.rows = grid.count
+        self.grid = grid
     }
     
     func asMatrix() -> Matrix<S> {
-        return Matrix(rows: self.rows, values: self.grid)
+        return Matrix(grid: grid)
     }
 }
 
@@ -29,14 +36,9 @@ extension ComplexSquareMatrix: ComplexMatrixType {
     }
     
     public func isIdentity() -> Bool {
-        for (index, value) in grid.enumerated() {
-            if rowIndexForGridIndex(index) == columnIndexForGridIndex(index)  {
-                if value != 1 { return false }
-            } else {
-                if value != 0 { return false }
-            }
-        }
-        return true
+        var isIdentity = true
+        for (index, row) in grid.enumerated() { if row[index] != 1 { isIdentity = false } }
+        return isIdentity
     }
     
     public func isUnitary() -> Bool {
@@ -51,12 +53,12 @@ extension ComplexSquareMatrix: ComplexMatrixType {
     
     public func determinant() -> CompNumb {
         if self.rows == 1 {
-            return self[0,0]
+            return self[1,1]
         } else {
             var determinant: CompNumb = 0
-            for k in 0...columns-1 {
-                let sign: CompNumb = (k % 2 == 0) ? 1 : -1
-                determinant = determinant + sign * self[0,k] * (self.minor(0, column: k).determinant())
+            for k in 1...columns {
+                let sign: CompNumb = (k % 2 != 0) ? 1 : -1
+                determinant = determinant + sign * self[1,k] * (self.minor(1, column: k).determinant())
             }
             return determinant
         }
@@ -66,18 +68,23 @@ extension ComplexSquareMatrix: ComplexMatrixType {
 extension SquareMatrix: Ring where S == CompNumb {
     
     static public func *(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
-        let newGrid: [CompNumb] = (0..<lhs.rows*rhs.columns).map {
-            let j = $0%rhs.columns
-            let i = Int(($0 - $0%rhs.columns)/rhs.columns)
-            return (lhs.row(i) ** rhs.column(j))!
+        precondition(lhs.rows == rhs.rows, "You can only multiply square matrices of the same size")
+        let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
+            return (1...rhs.columns).map { j in
+                return (lhs.row(i) ** rhs.column(j))!
+            }
         }
-        return SquareMatrix(rows: lhs.rows, values: newGrid)
+        return SquareMatrix(grid: newGrid)
     }
     
     static public func +(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
-        assert(lhs.rows == rhs.rows && lhs.columns == rhs.columns, "You can only sum matrices of the same size")
-        let newArray = (0..<lhs.rows*lhs.columns).map { lhs.grid[$0] + rhs.grid[$0] }
-        return SquareMatrix(rows: lhs.rows, values: newArray)
+        assert(lhs.rows == rhs.columns, "You can only sum matrices of the same size")
+        let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
+            return (1...rhs.columns).map { j in
+                return (lhs[i,j] + rhs[i,j])
+            }
+        }
+        return SquareMatrix(grid: newGrid)
     }
 }
 
@@ -88,16 +95,16 @@ extension SquareMatrix: Field where S == CompNumb {
 extension SquareMatrix: AssociativeAlgebra where S == CompNumb {
     /// TODO: give a proper multiplicative inverse to square matrices
     public func multInverse() -> Self {
-        return SquareMatrix(rows: 0, values: [])
+        return SquareMatrix(grid: [])
     }
 
     public func addInverse() -> Self {
-        return SquareMatrix(rows: self.rows, values: self.grid.map{$0.addInverse()})
+        return SquareMatrix(grid: self.grid.map{$0.map { $0.addInverse() } })
     }
     
     public static func *(lhs:CompNumb, rhs: SquareMatrix) -> Self {
-        let newGrid = rhs.grid.map { lhs*$0 }
-        return SquareMatrix(rows: rhs.rows, values: newGrid)
+        let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
+        return SquareMatrix(grid: newGrid)
     }
     public static func *(lhs:SquareMatrix, rhs: CompNumb) -> Self {
         return rhs*lhs
