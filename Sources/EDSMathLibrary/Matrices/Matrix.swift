@@ -67,26 +67,19 @@ extension Matrix {
     }
 }
 
-extension Matrix where S == CompNumb {
+extension Matrix where S: Field {
     
-    public static func *(lhs:CompNumb, rhs: Matrix) -> Self {
+    public static func *(lhs:S, rhs: Matrix) -> Self {
         let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
         return Matrix(grid: newGrid)
     }
-    public static func *(lhs:Matrix, rhs: CompNumb) -> Self {
+    public static func *(lhs:Matrix, rhs: S) -> Self {
         return rhs*lhs
     }
-}
-
-extension Matrix where S == Double {
+    public static func *(lhs:Matrix, rhs: [S]) -> [S?] {
+        return lhs.grid.map { $0 ** rhs }
+    }
     
-    public static func *(lhs:Double, rhs: Matrix) -> Self {
-        let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
-        return Matrix(grid: newGrid)
-    }
-    public static func *(lhs:Matrix, rhs: Double) -> Self {
-        return rhs*lhs
-    }
 }
 
 

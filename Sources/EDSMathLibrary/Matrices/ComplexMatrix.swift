@@ -11,7 +11,6 @@ extension ComplexMatrix: ComplexMatrixType {
     
     public func isInvertible() -> Bool {
         guard let squareMatrix = self.asSquareMatrix() else { return false }
-        
         return squareMatrix.isInvertible()
     }
     

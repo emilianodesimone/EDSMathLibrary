@@ -12,6 +12,8 @@ final class EDSMathLibraryTests: XCTestCase {
     var hermitianMatrix: SquareMatrix<CompNumb>!
     var testMatrixToInvert: SquareMatrix<CompNumb>!
     var testMatrixInverted: SquareMatrix<CompNumb>!
+    var trivialLinearSystem: LinearSystem!
+    var trivialLinearSystemCoefficients: [CompNumb]!
     
     override func setUp() {
         super.setUp()
@@ -22,8 +24,10 @@ final class EDSMathLibraryTests: XCTestCase {
         idMatrix = SquareMatrix(grid: [[1,0,0],[0,1,0],[0,0,1]])
         squareMatrix = SquareMatrix(grid: [[2,3],[1,4]])
         hermitianMatrix = SquareMatrix(grid: [[1, 1 + 2.i, 2 + 3.i], [1 - 2.i, 3, 4 - 2.i], [2 - 3.i, 4 + 2.i, 3]])
-        testMatrixToInvert = SquareMatrix<CompNumb>(grid: [[4,7],[2,6]])
-        testMatrixInverted = SquareMatrix<CompNumb>(grid: [[0.6,-0.7],[-0.2,0.4]])
+        testMatrixToInvert = SquareMatrix(grid: [[4,7],[2,6]])
+        testMatrixInverted = SquareMatrix(grid: [[0.6,-0.7],[-0.2,0.4]])
+        trivialLinearSystemCoefficients = [2, 4, 6]
+        trivialLinearSystem = LinearSystem(matrix: idMatrix.asMatrix(), coefficients: trivialLinearSystemCoefficients)
     }
     
     override func tearDown() {
@@ -37,7 +41,6 @@ final class EDSMathLibraryTests: XCTestCase {
         squareMatrixInDisguise = nil
         hermitianMatrix = nil
     }
-    
     
     func testDeterminant() {
         XCTAssertNil(testRealMatrix.determinant(), "The determinant of a non-square matrix has to be nil")
@@ -65,6 +68,10 @@ final class EDSMathLibraryTests: XCTestCase {
     
     func testTransposition() {
         XCTAssertEqual(testRealMatrix.transposed(), testRealMatrixTransposed, "The matrix returned by the transpose() function called by the first matrix should be equal to the second matrix.")
+    }
+    
+    func testLlinearSystems() {
+        XCTAssertEqual(trivialLinearSystem.solutions, trivialLinearSystemCoefficients ,"A matrix different from the Identity matrix cannot be recognised as such.")
     }
     
     func testSizes() {
