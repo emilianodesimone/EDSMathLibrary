@@ -22,7 +22,7 @@ public struct SquareMatrix<S>: MatrixType where S: Field & CustomStringConvertib
         self.grid = grid
     }
     
-    func asMatrix() -> Matrix<S> {
+    public func asMatrix() -> Matrix<S> {
         return Matrix(grid: grid)
     }
 }
