@@ -48,7 +48,7 @@ public struct CompNumb: Hashable, ExpressibleByIntegerLiteral, ExpressibleByFloa
 
 extension CompNumb: Equatable {
     static public func ==(lhs: CompNumb, rhs:CompNumb) -> Bool {
-        return lhs.real == rhs.real && lhs.im == rhs.im
+        return abs(lhs.real - rhs.real) + abs(lhs.im - rhs.im) < 0.0000001
     }
 }
 
