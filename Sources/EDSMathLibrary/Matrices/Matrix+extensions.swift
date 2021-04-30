@@ -1,11 +1,11 @@
 import Foundation
 
-typealias ComplexMatrix = Matrix<CompNumb>
-typealias RealMatrix = Matrix<Double>
+public typealias ComplexMatrix = Matrix<CompNumb>
+public typealias RealMatrix = Matrix<Double>
 
-extension Matrix {
+public extension Matrix {
     
-    public func isInvertible() -> Bool {
+    func isInvertible() -> Bool {
         guard let squareMatrix = self.asSquareMatrix() else { return false }
         return squareMatrix.isInvertible()
     }

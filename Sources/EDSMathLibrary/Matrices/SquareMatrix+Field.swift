@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension SquareMatrix where S: Field {
+public extension SquareMatrix where S: Field {
     
     func minor(_ row: Int, column: Int) -> SquareMatrix {
         let squareMatrix = asMatrix().matrixByRemoveColumn(column).matrixByRemoveRow(row).asSquareMatrix()
@@ -15,7 +15,7 @@ extension SquareMatrix where S: Field {
         return squareMatrix!
     }
     
-    public func determinant() -> S {
+    func determinant() -> S {
         if self.rows == 1 {
             return self[1,1]
         } else {
@@ -29,21 +29,21 @@ extension SquareMatrix where S: Field {
         }
     }
     
-    public func isInvertible() -> Bool {
+    func isInvertible() -> Bool {
         return (self.determinant() != S.zero) ? true : false
     }
     
-    public func isIdentity() -> Bool {
+    func isIdentity() -> Bool {
         var isIdentity = true
         for (index, row) in grid.enumerated() { if row[index] != S.one { isIdentity = false } }
         return isIdentity
     }
     
-    public func isUnitary() -> Bool {
+    func isUnitary() -> Bool {
         return ((self * self.transposed()).isIdentity())
     }
     
-    static public func *(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
+    static func *(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
         precondition(lhs.rows == rhs.rows, "You can only multiply square matrices of the same size")
         let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
             return (1...rhs.columns).map { j in
@@ -52,7 +52,7 @@ extension SquareMatrix where S: Field {
         }
         return SquareMatrix(grid: newGrid)
     }
-    static public func +(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
+    static func +(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
         assert(lhs.rows == rhs.columns, "You can only sum matrices of the same size")
         let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
             return (1...rhs.columns).map { j in
@@ -62,25 +62,25 @@ extension SquareMatrix where S: Field {
         return SquareMatrix(grid: newGrid)
     }
     
-    public static func *(lhs:S, rhs: SquareMatrix) -> Self? {
+    static func *(lhs:S, rhs: SquareMatrix) -> Self? {
         return (lhs * rhs.asMatrix()).asSquareMatrix()
     }
-    public static func *(lhs:SquareMatrix, rhs: S) -> Self? {
+    static func *(lhs:SquareMatrix, rhs: S) -> Self? {
         return (lhs.asMatrix()*rhs).asSquareMatrix()
     }
-    public static func *(lhs:SquareMatrix, rhs: [S]) -> [S?] {
+    static func *(lhs:SquareMatrix, rhs: [S]) -> [S?] {
         return (lhs.asMatrix() * rhs)
     }
     
-    public static func *(lhs:S, rhs: SquareMatrix) -> Self {
+    static func *(lhs:S, rhs: SquareMatrix) -> Self {
         let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
         return SquareMatrix(grid: newGrid)
     }
-    public static func *(lhs:SquareMatrix, rhs: S) -> Self {
+    static func *(lhs:SquareMatrix, rhs: S) -> Self {
         return rhs*lhs
     }
     
-    public func multInverse() -> Self {
+    func multInverse() -> Self {
         let determinant = self.determinant()
         let minorsGrid: [[S]] = (1...rows).map {i in
             (1...columns).map {j in
@@ -93,7 +93,7 @@ extension SquareMatrix where S: Field {
         return minorMatrix/determinant
     }
     
-    public func addInverse() -> Self {
+    func addInverse() -> Self {
         return SquareMatrix(grid: self.grid.map{$0.map { $0.addInverse() } })
     }
     

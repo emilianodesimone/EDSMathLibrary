@@ -22,7 +22,7 @@ public struct Matrix<S>: MatrixType where S: Field & CustomStringConvertible {
     }
 }
 
-extension Matrix {
+public extension Matrix {
     
     func asSquareMatrix() -> SquareMatrix<S>? {
         guard rows == columns else { return nil }
@@ -46,7 +46,7 @@ extension Matrix {
         
     }
     
-    static public func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
+    static func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
         guard (lhs.columns == rhs.rows && lhs.columns > 0) else { return nil }
         let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
             return (1...rhs.columns).map { j in
@@ -56,7 +56,7 @@ extension Matrix {
         return Matrix(grid: newGrid)
     }
     
-    static public func +(lhs: Matrix, rhs: Matrix) -> Matrix? {
+    static func +(lhs: Matrix, rhs: Matrix) -> Matrix? {
         guard (lhs.rows == rhs.rows && lhs.columns == rhs.columns) else { return nil }
         let newGrid: [[S]] = (1...lhs.rows).map { i -> [S] in
             return (1...rhs.columns).map { j in
@@ -67,16 +67,16 @@ extension Matrix {
     }
 }
 
-extension Matrix where S: Field {
+public extension Matrix where S: Field {
     
-    public static func *(lhs:S, rhs: Matrix) -> Self {
+    static func *(lhs:S, rhs: Matrix) -> Self {
         let newGrid = rhs.grid.map { $0.map { lhs*$0 } }
         return Matrix(grid: newGrid)
     }
-    public static func *(lhs:Matrix, rhs: S) -> Self {
+    static func *(lhs:Matrix, rhs: S) -> Self {
         return rhs*lhs
     }
-    public static func *(lhs:Matrix, rhs: [S]) -> [S?] {
+    static func *(lhs:Matrix, rhs: [S]) -> [S?] {
         return lhs.grid.map { $0 ** rhs }
     }
     

@@ -7,9 +7,9 @@
 
 import Foundation
 
-typealias ComplexSquareMatrix = SquareMatrix<CompNumb>
+public typealias ComplexSquareMatrix = SquareMatrix<CompNumb>
 
-extension ComplexSquareMatrix {
+public extension ComplexSquareMatrix {
     func conjugated() -> Self {
         let newGrid = self.grid.map{ $0.map{ $0.conjugated() } }
         
