@@ -42,7 +42,6 @@ extension MatrixType {
 //    }
     
     public static func ==(lhs:Self, rhs: Self) -> Bool {
-        
         return (lhs.grid.count == rhs.grid.count && lhs.grid == rhs.grid)
     }
 }

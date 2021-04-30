@@ -88,6 +88,10 @@ extension Double: Field {
     public func addInverse() -> Double {
         return -self
     }
+    
+    static public func ==(lhs: Double, rhs:Double) -> Bool {
+        return abs(lhs - rhs) < 0.0000001
+    }
 }
 
 
