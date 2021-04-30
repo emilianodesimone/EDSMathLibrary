@@ -3,32 +3,32 @@ import XCTest
 
 final class EDSMathLibraryTests: XCTestCase {
     
-    var testRealMatrix: Matrix<CompNumb>!
-    var testRealMatrixTransposed: Matrix<CompNumb>!
+    var testRealMatrix: ComplexMatrix!
+    var testRealMatrixTransposed: ComplexMatrix!
     var testComplexSquareMatrix: SquareMatrix<CompNumb>!
-    var squareMatrixInDisguise: Matrix<CompNumb>!
+    var squareMatrixInDisguise: ComplexMatrix!
     var idMatrix: SquareMatrix<CompNumb>!
     var squareMatrix: SquareMatrix<CompNumb>!
     var hermitianMatrix: SquareMatrix<CompNumb>!
     var testMatrixToInvert: SquareMatrix<CompNumb>!
     var testMatrixInverted: SquareMatrix<CompNumb>!
     var trivialLinearSystem: LinearSystem!
-    var trivialMatrix: Matrix<Double>!
+    var trivialMatrix: RealMatrix!
     var trivialLinearSystemCoefficients: [Double]!
     
     override func setUp() {
         super.setUp()
-        testRealMatrix = Matrix(grid: [[0,1],[2,1],[3,5]])
-        testRealMatrixTransposed = Matrix(grid: [[0,2,3],[1,1,5]])
+        testRealMatrix = ComplexMatrix(grid: [[0,1],[2,1],[3,5]])
+        testRealMatrixTransposed = ComplexMatrix(grid: [[0,2,3],[1,1,5]])
         testComplexSquareMatrix = SquareMatrix(grid: [[2 - 8.i, 3.i], [1, 0 - 4.i]])
-        squareMatrixInDisguise = Matrix(grid: [[0,1,2],[1,3,5], [4, 2, 3]])
+        squareMatrixInDisguise = ComplexMatrix(grid: [[0,1,2],[1,3,5], [4, 2, 3]])
         idMatrix = SquareMatrix(grid: [[1,0,0],[0,1,0],[0,0,1]])
         squareMatrix = SquareMatrix(grid: [[2,3],[1,4]])
         hermitianMatrix = SquareMatrix(grid: [[1, 1 + 2.i, 2 + 3.i], [1 - 2.i, 3, 4 - 2.i], [2 - 3.i, 4 + 2.i, 3]])
         testMatrixToInvert = SquareMatrix(grid: [[4,7],[2,6]])
         testMatrixInverted = SquareMatrix(grid: [[0.6,-0.7],[-0.2,0.4]])
         trivialLinearSystemCoefficients = [2, 4, 6]
-        trivialMatrix = Matrix(grid: [[1,0,0],[0,1,0],[0,0,1]])
+        trivialMatrix = RealMatrix(grid: [[1,0,0],[0,1,0],[0,0,1]])
         trivialLinearSystem = LinearSystem(matrix: trivialMatrix, coefficients: trivialLinearSystemCoefficients)
     }
     

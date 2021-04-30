@@ -1,5 +1,8 @@
 import Foundation
 
+typealias ComplexMatrix = Matrix<CompNumb>
+typealias RealMatrix = Matrix<Double>
+
 extension Matrix {
     
     public func isInvertible() -> Bool {
