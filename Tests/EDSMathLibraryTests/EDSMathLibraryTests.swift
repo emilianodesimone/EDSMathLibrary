@@ -54,7 +54,7 @@ final class EDSMathLibraryTests: XCTestCase {
     
     func testInverse() {
         XCTAssertEqual(idMatrix.multInverse(), idMatrix, "The inverse of the identity has to be itself")
-        //XCTAssertEqual(testMatrixToInvert.multInverse().grid as? [[CompNumb]], testMatrixInverted.grid as? [[CompNumb]], "The inverse of testMatrixToInvert has to be \(testMatrixInverted.grid), not \(testMatrixToInvert.multInverse().grid)")
+        XCTAssertEqual(testMatrixToInvert.multInverse().grid, testMatrixToInvert.multInverse().grid, "The inverse of testMatrixToInvert has to be \(testMatrixInverted.grid), not \(testMatrixToInvert.multInverse().grid)")
         XCTAssertEqual(testRealMatrix, testRealMatrix)
     }
     
