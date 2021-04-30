@@ -1,7 +1,5 @@
 import Foundation
 
-
-
 public func factorial(_ k: Int) -> Int {
     if k == 1 { return 1 }
     else {
@@ -42,6 +40,8 @@ public protocol Field: Ring {
     
     func multInverse() -> Self
     func addInverse() -> Self
+    static var zero: Self { get }
+    static var one: Self { get }
 }
 
 public protocol AssociativeAlgebra: Field {
@@ -81,6 +81,14 @@ public extension Float {
 
 
 extension Double: Field {
+    public static var one: Double {
+        return 1
+    }
+    
+    public static var zero: Double {
+        return 0
+    }
+    
     public func multInverse() -> Double {
         return Double(1/self)
     }
@@ -96,6 +104,13 @@ extension Double: Field {
 
 
 extension Float: Field {
+    public static var one: Float {
+        1
+    }
+    
+    public static var zero: Float {
+        return 0
+    }
 
     public func multInverse() -> Float {
         return Float(1/self)

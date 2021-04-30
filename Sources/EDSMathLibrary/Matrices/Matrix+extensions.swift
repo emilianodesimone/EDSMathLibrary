@@ -1,13 +1,6 @@
 import Foundation
 
-typealias ComplexMatrix = Matrix<CompNumb>
-
-extension ComplexMatrix: ComplexMatrixType {
-    
-    func asSquareMatrix() -> ComplexSquareMatrix? {
-        guard rows == columns else { return nil }
-        return ComplexSquareMatrix(grid: self.grid)
-    }
+extension Matrix {
     
     public func isInvertible() -> Bool {
         guard let squareMatrix = self.asSquareMatrix() else { return false }
@@ -19,7 +12,7 @@ extension ComplexMatrix: ComplexMatrixType {
         return squareMatrix.isUnitary()
     }
     
-    func determinant() -> CompNumb? {
+    func determinant() -> S? {
         guard let squareMatrix = self.asSquareMatrix() else { return nil }
         return squareMatrix.determinant()
     }

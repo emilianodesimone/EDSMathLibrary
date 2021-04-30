@@ -8,9 +8,9 @@
 import Foundation
 
 struct LinearSystem {
-    let matrix: Matrix<CompNumb>
-    let coefficients: [CompNumb]
-    var solutions: [CompNumb?] {
+    let matrix: Matrix<Double>
+    let coefficients: [Double]
+    var solutions: [Double?] {
         if let squareMatrix = matrix.asSquareMatrix() {
             return squareMatrix.multInverse() * coefficients
         }

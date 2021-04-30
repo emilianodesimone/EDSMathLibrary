@@ -26,5 +26,3 @@ public struct SquareMatrix<S>: MatrixType where S: Field & CustomStringConvertib
         return Matrix(grid: grid)
     }
 }
-
-

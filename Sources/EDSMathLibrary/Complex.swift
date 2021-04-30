@@ -105,6 +105,14 @@ extension CompNumb: Ring {
 }
 
 extension CompNumb: Field {
+    public static var zero: CompNumb {
+        return 0
+    }
+    
+    public static var one: CompNumb {
+        return 1
+    }
+    
     
     public func multInverse() -> CompNumb {
         return CompNumb(real: self.real/(self.real*self.real + self.im*self.im), imaginary: -self.im/(self.real*self.real + self.im*self.im))
