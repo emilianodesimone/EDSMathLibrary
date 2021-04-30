@@ -105,7 +105,16 @@ extension SquareMatrix: Field where S == CompNumb {
 extension SquareMatrix: AssociativeAlgebra where S == CompNumb {
     /// TODO: give a proper multiplicative inverse to square matrices
     public func multInverse() -> Self {
-        return SquareMatrix(grid: [])
+        let determinant = self.determinant()
+        let minorsGrid: [[S]] = (1...rows).map {i in
+            (1...columns).map {j in
+                let sign: CompNumb = i % 2 == j % 2 ? 1 : -1
+                return sign * (self.minor(i, column: j).determinant())
+        }
+        }
+        
+        let minorMatrix = SquareMatrix(grid: minorsGrid).transposed()
+        return minorMatrix/determinant
     }
 
     public func addInverse() -> Self {

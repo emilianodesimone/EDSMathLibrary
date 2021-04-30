@@ -10,6 +10,8 @@ final class EDSMathLibraryTests: XCTestCase {
     var idMatrix: SquareMatrix<CompNumb>!
     var squareMatrix: SquareMatrix<CompNumb>!
     var hermitianMatrix: SquareMatrix<CompNumb>!
+    var testMatrixToInvert: SquareMatrix<CompNumb>!
+    var testMatrixInverted: SquareMatrix<CompNumb>!
     
     override func setUp() {
         super.setUp()
@@ -20,6 +22,8 @@ final class EDSMathLibraryTests: XCTestCase {
         idMatrix = SquareMatrix(grid: [[1,0,0],[0,1,0],[0,0,1]])
         squareMatrix = SquareMatrix(grid: [[2,3],[1,4]])
         hermitianMatrix = SquareMatrix(grid: [[1, 1 + 2.i, 2 + 3.i], [1 - 2.i, 3, 4 - 2.i], [2 - 3.i, 4 + 2.i, 3]])
+        testMatrixToInvert = SquareMatrix<CompNumb>(grid: [[4,7],[2,6]])
+        testMatrixInverted = SquareMatrix<CompNumb>(grid: [[0.6,-0.7],[-0.2,0.4]])
     }
     
     override func tearDown() {
@@ -36,18 +40,22 @@ final class EDSMathLibraryTests: XCTestCase {
     
     
     func testDeterminant() {
-        
         XCTAssertNil(testRealMatrix.determinant(), "The determinant of a non-square matrix has to be nil")
         XCTAssertNotNil(squareMatrixInDisguise, "A matrix of class 'Matrix', if it's square, has to have a determinant")
         XCTAssertEqual(idMatrix.determinant(), 1, "The determinant of the Identity has to be equal to 1")
         XCTAssertEqual(squareMatrix.determinant(), 5, "The determinant of this test SquareMatrix has to be equal to 5")
         XCTAssertEqual(testComplexSquareMatrix.determinant(), -32 - 11.i , "The determinant of this test SquareMatrix has to be equal to \(-32 - 11.i) and not \(testComplexSquareMatrix.determinant())")
-        
     }
     
     func testHermitian() {
         XCTAssertTrue(hermitianMatrix.isHermitian(), "An hermitian matrix has to be recognised as such.")
         XCTAssertTrue(idMatrix.isHermitian(), "The identity matrix is hermitian.")
+    }
+    
+    func testInverse() {
+        XCTAssertEqual(idMatrix.multInverse(), idMatrix, "The inverse of the identity has to be itself")
+        //XCTAssertEqual(testMatrixToInvert.multInverse().grid as? [[CompNumb]], testMatrixInverted.grid as? [[CompNumb]], "The inverse of testMatrixToInvert has to be \(testMatrixInverted.grid), not \(testMatrixToInvert.multInverse().grid)")
+        XCTAssertEqual(testRealMatrix, testRealMatrix)
     }
     
     func testIdentity() {

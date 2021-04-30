@@ -9,10 +9,10 @@ public struct Matrix<S>: MatrixType where S: Field & CustomStringConvertible {
     
     public init(grid: [[S]]) {
         precondition({
-            guard grid.count > 0 else { return (false) }
+            guard let firstRow = grid.first else { return (false) }
             var precondition = true
-            grid.enumerated().forEach { offset, row in
-                if row.count != grid[0].count { precondition = false }
+            grid.forEach { row in
+                if row.count != firstRow.count { precondition = false }
             }
             return precondition
         }())

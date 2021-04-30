@@ -53,7 +53,7 @@ public protocol AssociativeAlgebra: Field {
 
 extension AssociativeAlgebra {
     static func /(lhs: Self, rhs: CompNumb) -> Self {
-        return lhs.multInverse()*rhs
+        return lhs*rhs.multInverse()
     }
 }
 
