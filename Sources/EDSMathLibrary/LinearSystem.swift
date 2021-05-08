@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LinearSystem {
+public struct LinearSystem {
     let matrix: Matrix<Double>
     let coefficients: [Double]
     var solutions: [Double?] {
