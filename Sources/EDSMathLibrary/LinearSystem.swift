@@ -16,4 +16,9 @@ public struct LinearSystem {
         }
         return []
     }
+    
+    public init(matrix: Matrix<Double>, oefficients: [Double]) {
+        self.matrix = matrix
+        self.coefficients = coefficients
+    }
 }
